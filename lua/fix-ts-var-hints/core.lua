@@ -1,13 +1,13 @@
 local M = {}
 
 -- Namespace for inlay hints
-local namespace = vim.api.nvim_create_namespace("inlay_hints")
-local inlay_cache = {} -- Cache to store inlay hints by line number
+M.namespace = vim.api.nvim_create_namespace("inlay_hints")
+M.inlay_cache = {} -- Cache to store inlay hints by line number
 
 -- Function to clear all inlay hints in the buffer
 function M.clear_inlay_hints(bufnr)
-	vim.api.nvim_buf_clear_namespace(bufnr, namespace, 0, -1)
-	inlay_cache[bufnr] = {} -- Clear the cache for the current buffer
+	vim.api.nvim_buf_clear_namespace(bufnr, M.namespace, 0, -1)
+	M.inlay_cache[bufnr] = {} -- Clear the cache for the current buffer
 end
 
 -- Helper function to normalize whitespace
@@ -49,8 +49,8 @@ end
 function M.show_inlay_hints()
 	local bufnr = vim.api.nvim_get_current_buf()
 
-	if not inlay_cache[bufnr] then
-		inlay_cache[bufnr] = {}
+	if not M.inlay_cache[bufnr] then
+		M.inlay_cache[bufnr] = {}
 	end
 
 	M.clear_inlay_hints(bufnr)
@@ -86,21 +86,21 @@ function M.show_inlay_hints()
 								return
 							end
 
-							if inlay_cache[bufnr][row] == type_info then
+							if M.inlay_cache[bufnr][row] == type_info then
 								return
 							end
 
-							local normalized_cached_hint = M.normalize_whitespace(inlay_cache[bufnr][row] or "")
+							local normalized_cached_hint = M.normalize_whitespace(M.inlay_cache[bufnr][row] or "")
 							local normalized_current_hint = M.normalize_whitespace(type_info or "")
 
 							if normalized_cached_hint == normalized_current_hint then
 								return
 							end
 
-							inlay_cache[bufnr] = inlay_cache[bufnr] or {}
-							inlay_cache[bufnr][row] = type_info
+							M.inlay_cache[bufnr] = M.inlay_cache[bufnr] or {}
+							M.inlay_cache[bufnr][row] = type_info
 
-							vim.api.nvim_buf_set_extmark(bufnr, namespace, row, 0, {
+							vim.api.nvim_buf_set_extmark(bufnr, M.namespace, row, 0, {
 								virt_text = { { type_info, "Comment" } },
 								hl_mode = "combine",
 							})
