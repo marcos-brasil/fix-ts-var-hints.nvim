@@ -1,4 +1,5 @@
 print("Loaded init.lua")
+
 -- vim.cmd("packadd plenary.nvim")
 -- require("tests.fix-ts-var-hints_spec")
 
@@ -14,14 +15,14 @@ vim.opt.packpath:prepend("~/.local/share/nvim/lazy")
 -- Setup runtime path (RTP)
 vim.opt.rtp = {
 	root_dir,
-	"~/.local/share/nvim/lazy/lazy.nvim", -- Path to LazyVim's plugin manager
+	"~/.local/share/nvim/lazy", -- Path to LazyVim's plugin manager
+	"~/.local/state/nvim/lazy", -- Path to LazyVim's plugin manager
+	"~/.config/nvim",
 	vim.env.VIMRUNTIME,
 }
 
+vim.cmd("source " .. vim.fn.expand("~/.config/nvim/init.lua"))
 -- Load LazyVim configuration
-vim.cmd([[
-  source ~/.config/nvim/init.lua  -- Adjust this path to your LazyVim config
-]])
 
 -- Disable swap files for testing
 vim.opt.swapfile = false
